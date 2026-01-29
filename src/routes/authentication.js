@@ -1,0 +1,314 @@
+import express from "express";
+const router = express.Router();
+
+import passport from "passport";
+import pool from "../database.js";
+import jwt from "jsonwebtoken";
+
+
+
+
+
+router.post('/signup', passport.authenticate('local.signup', {
+    successRedirect: '/exitosignup',
+    failureRedirect:'/noexito',
+    failureFlash:true
+
+}))
+router.post('/signupde', passport.authenticate('local.signupde', {
+    successRedirect: '/exitosignup',
+    failureRedirect:'/noexito',
+    failureFlash:true
+
+}))
+
+///////////
+router.post('/signupf1', (req, res, next) => {
+  passport.authenticate('local.signupf1', (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error del servidor.' });
+    }
+    if (!user) {
+      return res.status(400).json({ message: info.message || 'Registro fallido.' });
+    }
+    // Si se quiere iniciar sesión automáticamente después de registrar
+    req.logIn(user, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error al iniciar sesión después del registro.' });
+      }
+      return res.status(200).json({ message: 'Registrado exitosamente.', user });
+    });
+  })(req, res, next);
+});
+
+router.post('/signupcl', (req, res, next) => {
+  passport.authenticate('local.signupcl', (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error del servidor.' });
+    }
+    if (!user) {
+      return res.status(400).json({ message: info.message || 'Registro fallido.' });
+    }
+    // Si se quiere iniciar sesión automáticamente después de registrar
+    req.logIn(user, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error al iniciar sesión después del registro.' });
+      }
+      return res.status(200).json({ message: 'Registrado exitosamente.', user });
+    });
+  })(req, res, next);
+});
+
+
+
+router.post('/signupcv', passport.authenticate('local.signup', {
+    successRedirect: '/exitosignup',
+    failureRedirect:'/noexito',
+    failureFlash:true
+
+}))
+
+router.post('/signinf1', passport.authenticate('local.signinf1', { failureRedirect: '/noexito' }),
+  function(req, res) {
+    console.log(req.user)
+    const userFoRToken ={
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel:req.user.nivel,
+       
+     
+    }
+ 
+    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    console.log(req.user)
+    res.send({
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel: req.user.nivel,
+       
+        token,
+      
+        
+    } )
+}
+  
+  );
+
+  
+router.post('/signincl', (req, res, next) => {
+    console.log("➡️ POST /signincl BODY:", req.body);
+    next();
+}, passport.authenticate('local.signincli', { failureRedirect: '/noexito' }),
+  function(req, res) {
+   
+    const userFoRToken ={
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel:req.user.nivel,
+       
+     
+    }
+ 
+    const token = jwt.sign(userFoRToken, 'clin123',{ expiresIn: 60*60*24*7})
+
+    res.send({
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel: req.user.nivel,
+       
+        token,
+      
+        
+    } )
+}
+  
+  );
+router.post('/signupcv', passport.authenticate('local.signup', {
+    successRedirect: '/exitosignup',
+    failureRedirect:'/noexito',
+    failureFlash:true
+
+}))
+router.post('/signincv', passport.authenticate('local.signincv', { failureRedirect: '/noexito' }),
+  function(req, res) {
+    console.log(req.user)
+    const userFoRToken ={
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel:req.user.nivel,
+       
+     
+    }
+ 
+    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    console.log(req.user)
+    res.send({
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel: req.user.nivel,
+       
+        token,
+      
+        
+    } )
+}
+  
+  );
+///////////
+
+router.get('/traerusuario/:cuil_cuit', async(req,res)=>{
+    cuil_cuit = req.params.cuil_cuit
+    const usuario = await pool.query('select * from users where cuil_cuit= ? ',[cuil_cuit])
+    res.json(usuario)
+    
+
+})
+
+router.get('/exitosignup',(req,res)=>{
+    console.log('registrado')
+    res.json('Registrado exitosamente!')
+})
+
+router.get('/noexito',(req,res)=>{
+ 
+    
+    res.send('Sin Exito')
+})
+
+
+
+
+
+
+
+
+/////////////jwt prueba
+router.post('/signin2', passport.authenticate('local.signin', { failureRedirect: '/noexito' }),
+  function(req, res) {
+    
+    const userFoRToken ={
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel:req.user.nivel,
+       
+     
+    }
+ 
+    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+  
+    res.send({
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel: req.user.nivel,
+        mail:  req.user.mail,
+        token,
+      
+        
+    } )
+}
+  
+  );
+/////////////////
+router.post('/signin', passport.authenticate('local.signin', { failureRedirect: '/noexito' }),
+  function(req, res) {
+    console.log(req.user)
+    const userFoRToken ={
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel:req.user.nivel,
+       
+     
+    }
+ 
+    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    console.log(req.user)
+    res.send({
+        id :req.user.id,
+        usuario: req.user.usuario,
+        nivel: req.user.nivel,
+        mail:  req.user.mail,
+        token,
+      
+        
+    } )
+}
+  
+  );
+router.post('/signin', (req, res, next) =>{
+    passport.authenticate('local.signin',{   
+        successRedirect: '/profile',
+        failureRedirect:'/signin',
+        failureFlash:true
+       
+    })(req, res, next)
+
+   
+})
+
+
+
+//sORIGINAL
+router.get('/profile', async (req, res)=>{
+    console.log(7)
+    
+    
+    res.json('profile')}
+   
+
+) 
+
+
+
+
+
+router.get('/logout', (req,res) =>{
+    req.logout()
+    res.redirect('/signin')
+})
+
+
+
+
+
+
+
+
+//  ACCIONES NIVEL 3
+
+router.post('/agregarunusuario',passport.authenticate('local.signupnivel3', {
+    successRedirect: '/exitosignup',
+    failureRedirect:'/signup',
+    failureFlash:true
+
+}))
+
+//probando  json web token 
+router.get('/loging',async(req,res)  =>{
+    const { cuil_cuit, password } = req.body;
+   
+    const rows = await pool.query('SELECT * FROM users' )
+    console.log('pide')
+    
+res.json(rows)
+
+
+})
+
+router.get('/prueba',async(req,res)  =>{
+    /*const { cuil_cuit, algo, token } = req.body;*/
+    console.log('hola')
+   
+   rows = await pool.query ('select * from clientes ')
+  
+    
+res.json(rows)
+
+
+
+
+
+})
+
+export default router;
