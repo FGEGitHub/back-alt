@@ -81,7 +81,7 @@ router.post('/signinf1', passport.authenticate('local.signinf1', { failureRedire
      
     }
  
-    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    const token = jwt.sign(userFoRToken, process.env.JWT_SECRET,{ expiresIn: 60*60*24*7})
     console.log(req.user)
     res.send({
         id :req.user.id,
@@ -142,7 +142,7 @@ router.post('/signincv', passport.authenticate('local.signincv', { failureRedire
      
     }
  
-    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    const token = jwt.sign(userFoRToken, process.env.PORT,{ expiresIn: 60*60*24*7})
     console.log(req.user)
     res.send({
         id :req.user.id,
@@ -196,7 +196,7 @@ router.post('/signin2', passport.authenticate('local.signin', { failureRedirect:
      
     }
  
-    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    const token = jwt.sign(userFoRToken, process.env.PORT,{ expiresIn: 60*60*24*7})
   
     res.send({
         id :req.user.id,
@@ -222,7 +222,7 @@ router.post('/signin', passport.authenticate('local.signin', { failureRedirect: 
      
     }
  
-    const token = jwt.sign(userFoRToken, 'tu_secreto_super_seguro',{ expiresIn: 60*60*24*7})
+    const token = jwt.sign(userFoRToken, process.env.PORT,{ expiresIn: 60*60*24*7})
     console.log(req.user)
     res.send({
         id :req.user.id,

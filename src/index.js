@@ -22,7 +22,7 @@ import "./lib/passport.js";
 // App init
 // ==============================
 const app = express();
-const PUERTO = 4000;
+const PUERTO =  process.env.PORT;
 
 app.set("port", PUERTO);
 app.set("view engine", ".hbs");
