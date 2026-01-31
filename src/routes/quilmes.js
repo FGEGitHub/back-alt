@@ -60,4 +60,80 @@ router.get("/crear-usuario", async (req, res) => {
   }
 });
 
+
+
+
+router.post("/agregarsocio", async (req, res) => {
+  try {
+    const {
+      nombre,
+      apellido,
+      dni,
+      genero,
+      fecha_nacimiento,
+      fecha_ingreso,
+      telefono,
+      direccion,
+      obra_social,
+      numero_afiliado,
+      email,
+      observaciones
+    } = req.body;
+
+    // 🔴 VALIDACIÓN OBLIGATORIA
+    if (!nombre || !apellido || !dni) {
+      return res.status(400).json({
+        ok: false,
+        message: "Nombre, apellido y DNI son obligatorios"
+      });
+    }
+
+    const sql = `
+      INSERT INTO socios (
+        nombre,
+        apellido,
+        dni,
+        genero,
+        fecha_nacimiento,
+        fecha_ingreso,
+        telefono,
+        direccion,
+    
+        email,
+        
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const valores = [
+      nombre.trim(),
+      apellido.trim(),
+      dni.trim(),
+      genero || null,
+      fecha_nacimiento || null,
+      fecha_ingreso || null,
+      telefono || null,
+      direccion || null,
+  
+      email || null,
+    
+    ];
+
+    const result = await pool.query(sql, valores);
+
+    res.status(201).json({
+      ok: true,
+      message: "Socio creado correctamente",
+      id_socio: result.insertId
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: "Error al crear socio"
+    });
+  }
+});
+
 export default router;
